@@ -12,6 +12,8 @@ h1 {
     height: 20vh;
     width: 100%;
     border: 2px solid black;
+    line-height: 10px;
+    overflow: auto;
 }
 
 .playBox1, .vsBox, .playerBox2{
@@ -38,15 +40,21 @@ button {
     margin-left: 35%;
 }
 
-.messege {
+.message {
     width: 100%;
     margin-right: 15px;
 }
 
-#messege-input {
+#message-input {
     width: 94%;
 }
 
 .chatbox  {
     overflow: scroll;
 }
+
+br {
+    display: block;
+    margin: 3px 0;
+ }
+
