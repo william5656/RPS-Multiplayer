@@ -1,0 +1,52 @@
+h1 {
+    text-align: center;
+}
+
+.maincontent {
+    height: 60vh;
+    width: 100%;
+    border: 2px solid black;
+}
+
+.chatBox {
+    height: 20vh;
+    width: 100%;
+    border: 2px solid black;
+}
+
+.playBox1, .vsBox, .playerBox2{
+    height: 100%;
+    border: 1px solid black;
+}
+
+button {
+    width: 50%;
+    height: 10%;
+    display: block;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+.login {
+    height: 5vh;
+    width: 100%;
+    border: 2px solid black;
+    border-bottom: none;
+}
+
+.addP {
+    margin-left: 35%;
+}
+
+.messege {
+    width: 100%;
+    margin-right: 15px;
+}
+
+#messege-input {
+    width: 94%;
+}
+
+.chatbox  {
+    overflow: scroll;
+}
