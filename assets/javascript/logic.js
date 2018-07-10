@@ -15,15 +15,64 @@ $( document ).ready(function() {
     var name = "";
     var user1Name = "";
     var user2Name = "";
+    var user1Choice = "";
+    var user2Choice = "";
     var newMessage = "";
-    var winPlayer1 = "";
-    var lossPlayer1 = "";
-    var winPlayer2 = "";
-    var lossPlayer2 = "";
+    var winPlayer1 = 0;
+    var losePlayer1 = 0;
+    var winPlayer2 = 0;
+    var losePlayer2 = 0;
     var turns = 1;
     var reset = false;
+    pickP2 = $(".pickP2");
+    pickP1 = $(".pickP1");
+        
+        function resetGame(){
+            IsGameResetting = false;
+            turns = 1;
+                database.ref().update({
+                    turn : turns
+                });
+        }
 
+        function clearDelay(){
+            clearTimeout(delayTimer);
+            resetGame();
+        }
 
+        function updatewinner1() {
+            
+        }
+
+        function updatewinner2() {
+
+        }
+
+        function updateScore() {
+            database.ref("player/1").update({
+                win : winPlayer1,
+                lose : losePlayer1
+            });
+            database.ref("player/2").update({
+                win: winPlayer2,
+                lose: losePlayer2
+            });
+        }
+
+        function playerScore(){
+            if(user1Choice == "rock" && user2Choice == "paper" || user1Choice == "paper" && user2Choice == "scissors" || user1Choice == "scissors" && user2Choice == "rock"){
+                winPlayer2++;
+                losePlayer1++;
+                updatewinner2();
+                updateScore();
+            }
+
+            if(user1Choice == "rock" && user2Choice == "scissors"
+        }
+        function hidden(){
+            $(".pickP2").hide()
+            $(".pickP1").hide()
+        }
         $("#add-player").on("click", function(event) {
             event.preventDefault();
                 var username = $("#player-input").val().trim();
@@ -37,7 +86,7 @@ $( document ).ready(function() {
                     database.ref("player/1").set({
                             name : username,
                             win: winPlayer1,
-                            lose: lossPlayer1
+                            lose: losePlayer1
                             });
                             $(".login").hide();
                 }
@@ -48,7 +97,7 @@ $( document ).ready(function() {
                     database.ref("player/2").set({
                         name : username,
                         win: winPlayer2,
-                        lose: lossPlayer2
+                        lose: losePlayer2
                     });
                     $(".login").hide();
                         database.ref().update({
@@ -109,7 +158,7 @@ $( document ).ready(function() {
                 }
             }
 
-            if((snapshot.child("player").child(2).exists()) && ((snapshot.child("player").child(1).exists()))){
+            if((snapshot.child("player").child(2).exists()) && ((snapshot.child("player").child(1).exists()) === false)){
                 $(".p2-name").html(snapshot.child("player").child(2).val().name);
 				//when any player disconnect from the game
 				disconnect();
@@ -119,9 +168,80 @@ $( document ).ready(function() {
                 
                 //when any player disconnect from the game
                 disconnect();
-                    //at the player1's  browser
+                    //at the player1's  browser    
+                }else if((snapshot.child("player").child(2).exists()) && ((snapshot.child("player").child(1).exists()))){
+                var databaseTurn = snapshot.child("turn").val();
+                user1Name = snapshot.child("player").child(1).val.name;
+                user2Name = snapshot.child("player").child(2).val.name;
                 
-                }
+                $(".p1-name").html(snapshot.child("player").child(1).val().name);  
+                $(".p2-name").html(snapshot.child("player").child(2).val().name);
+                $(".win1").html(snapshot.child("player").child(1).val().win);
+                $(".lose1").html(snapshot.child("player").child(1).val().lose);
+                $(".win2").html(snapshot.child("player").child(1).val().win);
+                $(".lose2").html(snapshot.child("player").child(1).val().lose);
+                disconnect();
 
+			if((name == snapshot.child("player").child(1).val().name) && (databaseTurn == 1)){
+                hidden();
+                pickP1.show(); 
+            }
+            if((name == snapshot.child("player").child(2).val().name) && (databaseTurn == 1)){
+                hidden();
+            }
+            if((name == snapshot.child("player").child(1).val().name) && (databaseTurn == 2)){
+                hidden();
+            }
+            if((name == snapshot.child("player").child(2).val().name) && (databaseTurn == 2)){
+                hidden();
+                pickP2.show();
+            }
+            if(databaseTurn == 3 && IsGameResetting == false){
+                IsGameResetting = true;
+            }
+            }
+
+        })
+
+        
+        pickP1.on("click","button", function(){
+            user1Choice = $(this).val();
+            console.log (this);
+            console.log (user1Choice);
+            
+            database.ref().once('value').then(function(snapshot) {
+                turns = (snapshot.child("turn").exists() ? snapshot.child("turn").val() : turns);
+                turns++;
+                
+            if((name = snapshot.child("player").child(1).val().name)){
+                database.ref("player/1").update({
+                    choice : user1Choice,
+                })
+
+                database.ref().update({
+                    turn : turns
+                })
+            }   
+            })
+        })
+
+        pickP2.on("click", "button", function(){
+            user2Choice = $(this).val();
+            console.log
+            console.log(user2Choice);
+
+            database.ref().once("value").then(function(snapshot) { 
+                turns = (snapshot.child("turn").exists() ? snapshot.child("turn").val() : turns);    
+                turns++
+
+            if((name - snapshot.child("player").child(1).val().name)){
+                database.ref("player/2").update({
+                    choice : user2Choice
+                })
+                database.ref().update({
+                    turn :turns
+                })
+            }
+            })
+        })
     })
-})

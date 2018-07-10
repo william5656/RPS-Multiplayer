@@ -58,3 +58,13 @@ br {
     margin: 3px 0;
  }
 
+h2 {
+    font-size: 28px;
+    margin-right: 20px;
+    
+}
+
+.pickP1 {
+    height: 100%;
+    width: 100%;
+}
