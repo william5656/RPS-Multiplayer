@@ -42,6 +42,7 @@ $( document ).ready(function() {
 
         function updatewinner1() {
             $(".vsBox").html("<h3>" + user1Name + " Wins <h3>")
+
             console.log(user1Name);
             console.log("hi");
         }
@@ -182,16 +183,21 @@ $( document ).ready(function() {
             if((!snapshot.child("player").child(1).exists()) && ((!snapshot.child("player").child(2).exists()))){
                 $(".p2-name").html("<h3> waiting for player  </h3>");
                 $(".p1-name").html("<h3> waiting for player </h3>");
+                
             }
             else if((snapshot.child("player").child(2).exists()) && ((snapshot.child("player").child(1).exists()) === false)){
                 $(".p2-name").html(snapshot.child("player").child(2).val().name);
                 $(".p1-name").html("<h3> waiting for player1 <h3>");
+                $(".win2").empty();
+                $(".lose2").empty();
 				//when any player disconnect from the game
 				disconnect();
             };
             if((snapshot.child("player").child(1).exists()) && ((snapshot.child("player").child(2).exists()) === false)){
                 $(".p1-name").html(snapshot.child("player").child(1).val().name);  
                 $(".p2-name").html("<h3> waiting for player2 </h3>");
+                $(".win1").empty();
+                $(".lose1").empty();
                 //when any player disconnect from the game
                 disconnect();
                     //at the player1's  browser    
@@ -232,7 +238,7 @@ $( document ).ready(function() {
                 winPlayer2 = snapshot.child("player").child(2).val().win;
                 losePlayer2 = snapshot.child("player").child(2).val().lose;
                 playerScore();
-                delayTimer = setTimeout(clearDelay, 5 * 1000);
+                delayTimer = setTimeout(clearDelay, 4 * 1000);
             }
         }
     })

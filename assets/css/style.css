@@ -2,23 +2,43 @@ h1 {
     text-align: center;
 }
 
+.login {
+    background-color: rgba(255, 255, 255, 0.65)
+}
+
 .maincontent {
     height: 60vh;
     width: 100%;
-    border: 2px solid black;
+    border: 2px solid #ffff99;
+    background-color: rgba(255, 255, 255, 0.65)
 }
 
 .chatBox {
     height: 20vh;
     width: 100%;
-    border: 2px solid black;
+    border: 2px solid #ffff99;
+    border-top: none;
     line-height: 10px;
     overflow: auto;
+    background-color: rgba(255, 255, 255, 0.65)
 }
 
-.playBox1, .vsBox, .playerBox2{
+.playBox1, .vsBox, .playBox2{
     height: 100%;
-    border: 1px solid black;
+    border: 1px solid #ffff99;
+    border-top: none;
+    border-bottom: none;
+}
+
+.vsBox{
+    border: none;
+}
+.playBox1 {
+    border-left: none;
+}
+
+.playBox2 {
+    border-right: none;
 }
 
 button {
@@ -32,7 +52,7 @@ button {
 .login {
     height: 5vh;
     width: 100%;
-    border: 2px solid black;
+    border: 2px solid #ffff99;
     border-bottom: none;
 }
 
@@ -67,4 +87,15 @@ h2 {
 .pickP1 {
     height: 100%;
     width: 100%;
+}
+
+.pickP2 {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    background-image: url(../images/background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
