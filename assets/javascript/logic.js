@@ -166,10 +166,6 @@ $( document ).ready(function() {
                                 dateAdded: firebase.database.ServerValue.TIMESTAMP												
                             });
                             
-                            turns = 1;
-                            database.ref().update({
-                                turn : turns
-                            });
                  
                             database.ref("player/1").onDisconnect().remove();
            
