@@ -51,6 +51,10 @@ $( document ).ready(function() {
             $(".vsBox").html("<h3>" + user2Name + " Wins <h3>");
         }
 
+        function updateTie() {
+            $(".vsBox").html("<h3> Draw  <h3>");
+        }
+
         function updateScore() {
             database.ref("player/1").update({
                 win : winPlayer1,
@@ -78,7 +82,7 @@ $( document ).ready(function() {
             }
 
             if(user1Choice == "rock" && user2Choice == "rock" || user1Choice == "paper" && user2Choice == "paper" || user1Choice == "scissors" && user2Choice == "scissors"){
-                updatewinner1();
+                updateTie();
                 updateScore();
             }
         }
@@ -161,6 +165,11 @@ $( document ).ready(function() {
                                 message: ((snapshot.child("player").child(1).val().name) + " has been DISCONNECTED!!"),
                                 dateAdded: firebase.database.ServerValue.TIMESTAMP												
                             });
+                            
+                            turns = 1;
+                            database.ref().update({
+                                turn : turns
+                            });
                  
                             database.ref("player/1").onDisconnect().remove();
            
@@ -186,7 +195,7 @@ $( document ).ready(function() {
                 
             }
             else if((snapshot.child("player").child(2).exists()) && ((snapshot.child("player").child(1).exists()) === false)){
-                $(".p2-name").html(snapshot.child("player").child(2).val().name);
+                $(".p2-name").html("<h3>" + snapshot.child("player").child(2).val().name + "</h3>");
                 $(".p1-name").html("<h3> waiting for player1 <h3>");
                 $(".win2").empty();
                 $(".lose2").empty();
@@ -194,7 +203,7 @@ $( document ).ready(function() {
 				disconnect();
             };
             if((snapshot.child("player").child(1).exists()) && ((snapshot.child("player").child(2).exists()) === false)){
-                $(".p1-name").html(snapshot.child("player").child(1).val().name);  
+                $(".p1-name").html("<h3>" + snapshot.child("player").child(1).val().name + "<h3>");  
                 $(".p2-name").html("<h3> waiting for player2 </h3>");
                 $(".win1").empty();
                 $(".lose1").empty();
@@ -203,8 +212,8 @@ $( document ).ready(function() {
                     //at the player1's  browser    
                 }else if((snapshot.child("player").child(2).exists()) && ((snapshot.child("player").child(1).exists()))){
                 var databaseTurn = snapshot.child("turn").val();
-                $(".p1-name").html(snapshot.child("player").child(1).val().name);  
-                $(".p2-name").html(snapshot.child("player").child(2).val().name);
+                $(".p1-name").html("<h3>" + snapshot.child("player").child(1).val().name + "</h3>");  
+                $(".p2-name").html("<h3>" +snapshot.child("player").child(2).val().name + "</h3>");
                 $(".win1").html(snapshot.child("player").child(1).val().win);
                 $(".lose1").html(snapshot.child("player").child(1).val().lose);
                 $(".win2").html(snapshot.child("player").child(2).val().win);
