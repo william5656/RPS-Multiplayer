@@ -23,7 +23,7 @@ $( document ).ready(function() {
     var winPlayer2 = 0;
     var losePlayer2 = 0;
     var turns = 1;
-    var reset = false;
+    var IsGameResetting = false;
     pickP2 = $(".pickP2");
     pickP1 = $(".pickP1");
         
@@ -41,11 +41,13 @@ $( document ).ready(function() {
         }
 
         function updatewinner1() {
-            
+            $(".vsBox").html("<h3>" + user1Name + " Wins <h3>")
+            console.log(user1Name);
+            console.log("hi");
         }
 
         function updatewinner2() {
-
+            $(".vsBox").html("<h3>" + user2Name + " Wins <h3>");
         }
 
         function updateScore() {
@@ -67,7 +69,17 @@ $( document ).ready(function() {
                 updateScore();
             }
 
-            if(user1Choice == "rock" && user2Choice == "scissors"
+            if(user1Choice == "rock" && user2Choice == "scissors" || user1Choice == "paper" && user2Choice == "rock" || user1Choice == "scissors" && user2Choice == "paper"){
+                winPlayer1++;
+                losePlayer2++;
+                updatewinner1();
+                updateScore();
+            }
+
+            if(user1Choice == "rock" && user2Choice == "rock" || user1Choice == "paper" && user2Choice == "paper" || user1Choice == "scissors" && user2Choice == "scissors"){
+                updatewinner1();
+                updateScore();
+            }
         }
         function hidden(){
             $(".pickP2").hide()
@@ -81,8 +93,11 @@ $( document ).ready(function() {
                 console.log(username);
 
             database.ref().once("value", function(snapshot) {
-
-                if (!snapshot.child("player").child(1).exists()) {
+                if ((!snapshot.child("player").child(1).exists()) && ((snapshot.child("player").child(2).exists()) && snapshot.child("player").child(2).val().name == name)){
+                    $(".vsBox").html("<h3> Name Taken </h3>")
+                }
+                else if (!snapshot.child("player").child(1).exists()) {
+                    $(".vsBox").empty();
                     database.ref("player/1").set({
                             name : username,
                             win: winPlayer1,
@@ -93,7 +108,11 @@ $( document ).ready(function() {
                 else if ((snapshot.child("player").child(1).exists()) && ((snapshot.child("player").child(2).exists()))) {
                 alert("there is two players playing");
                 }
+                else if ((snapshot.child("player").child(1).exists()) && (!(snapshot.child("player").child(2).exists()) && snapshot.child("player").child(1).val().name == name)){
+                    $(".vsBox").html("<h3> Name Taken </h3>")
+                }
                 else if ((snapshot.child("player").child(1).exists()) && (!(snapshot.child("player").child(2).exists()))){
+                    $(".vsBox").empty();
                     database.ref("player/2").set({
                         name : username,
                         win: winPlayer2,
@@ -157,29 +176,33 @@ $( document ).ready(function() {
                     }
                 }
             }
+            
+            
 
-            if((snapshot.child("player").child(2).exists()) && ((snapshot.child("player").child(1).exists()) === false)){
+            if((!snapshot.child("player").child(1).exists()) && ((!snapshot.child("player").child(2).exists()))){
+                $(".p2-name").html("<h3> waiting for player  </h3>");
+                $(".p1-name").html("<h3> waiting for player </h3>");
+            }
+            else if((snapshot.child("player").child(2).exists()) && ((snapshot.child("player").child(1).exists()) === false)){
                 $(".p2-name").html(snapshot.child("player").child(2).val().name);
+                $(".p1-name").html("<h3> waiting for player1 <h3>");
 				//when any player disconnect from the game
 				disconnect();
             };
             if((snapshot.child("player").child(1).exists()) && ((snapshot.child("player").child(2).exists()) === false)){
                 $(".p1-name").html(snapshot.child("player").child(1).val().name);  
-                
+                $(".p2-name").html("<h3> waiting for player2 </h3>");
                 //when any player disconnect from the game
                 disconnect();
                     //at the player1's  browser    
                 }else if((snapshot.child("player").child(2).exists()) && ((snapshot.child("player").child(1).exists()))){
                 var databaseTurn = snapshot.child("turn").val();
-                user1Name = snapshot.child("player").child(1).val.name;
-                user2Name = snapshot.child("player").child(2).val.name;
-                
                 $(".p1-name").html(snapshot.child("player").child(1).val().name);  
                 $(".p2-name").html(snapshot.child("player").child(2).val().name);
                 $(".win1").html(snapshot.child("player").child(1).val().win);
                 $(".lose1").html(snapshot.child("player").child(1).val().lose);
-                $(".win2").html(snapshot.child("player").child(1).val().win);
-                $(".lose2").html(snapshot.child("player").child(1).val().lose);
+                $(".win2").html(snapshot.child("player").child(2).val().win);
+                $(".lose2").html(snapshot.child("player").child(2).val().lose);
                 disconnect();
 
 			if((name == snapshot.child("player").child(1).val().name) && (databaseTurn == 1)){
@@ -191,6 +214,7 @@ $( document ).ready(function() {
             }
             if((name == snapshot.child("player").child(1).val().name) && (databaseTurn == 2)){
                 hidden();
+                console.log(snapshot.child("player").child(1).val().name);
             }
             if((name == snapshot.child("player").child(2).val().name) && (databaseTurn == 2)){
                 hidden();
@@ -198,10 +222,20 @@ $( document ).ready(function() {
             }
             if(databaseTurn == 3 && IsGameResetting == false){
                 IsGameResetting = true;
+                user1Name = snapshot.child("player").child(1).val().name;
+                user2Name = snapshot.child("player").child(2).val().name;
+               
+                user1Choice = snapshot.child("player").child(1).val().choice;
+                user2Choice = snapshot.child("player").child(2).val().choice;
+                winPlayer1 = snapshot.child("player").child(1).val().win;
+                losePlayer1 = snapshot.child("player").child(1).val().lose;
+                winPlayer2 = snapshot.child("player").child(2).val().win;
+                losePlayer2 = snapshot.child("player").child(2).val().lose;
+                playerScore();
+                delayTimer = setTimeout(clearDelay, 5 * 1000);
             }
-            }
-
-        })
+        }
+    })
 
         
         pickP1.on("click","button", function(){
@@ -225,23 +259,25 @@ $( document ).ready(function() {
             })
         })
 
-        pickP2.on("click", "button", function(){
+        pickP2.on("click","button", function(){
             user2Choice = $(this).val();
-            console.log
-            console.log(user2Choice);
-
-            database.ref().once("value").then(function(snapshot) { 
-                turns = (snapshot.child("turn").exists() ? snapshot.child("turn").val() : turns);    
-                turns++
-
-            if((name - snapshot.child("player").child(1).val().name)){
+            console.log (user2Choice);
+            
+            database.ref().once('value').then(function(snapshot) {
+                turns = (snapshot.child("turn").exists() ? snapshot.child("turn").val() : turns);
+                turns++;
+                
+            if((name = snapshot.child("player").child(2).val().name)){
                 database.ref("player/2").update({
-                    choice : user2Choice
+                    choice : user2Choice,
                 })
+
                 database.ref().update({
-                    turn :turns
+                    turn : turns
                 })
-            }
+            }   
             })
         })
+
+        hidden();
     })
